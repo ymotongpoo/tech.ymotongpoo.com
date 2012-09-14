@@ -138,8 +138,8 @@ pythonz is originally forked from pythonbrew, and pythonz has simpler features t
 - It addes unnecessary extra entry points
 - We do not install Python binary into system frequently
 
-パッケージの管理
-================
+Managing Python packages
+========================
 
 - setup.py (distutils, setuptools, distribute)
 - easy_install (setuptools, distribute, distutils2)
@@ -149,22 +149,21 @@ pythonz is originally forked from pythonbrew, and pythonz has simpler features t
 setup.py
 --------
 
-setup.pyはPythonモジュールを配布する際に必ず必要になるスクリプトファイルで、ファイル内にはモジュールのメタデータを含んだsetup関数が記載してあります。setup.pyの詳細は公式ドキュメントにゆずるとして、setup.pyの現状についてご紹介します。
+``setup.py`` is the important script which is necessary for distributing, building and installing Python modules into system. It contains ``setup`` function which handles all metadata describing the module. You can refer to official Python documantation for details of ``setup.py``, so I provide current status of ``setup.py``.
 
 setup関数自体はPython標準ライブラリのdistutils内で定義されていますが、依存ライブラリの解消や、エントリポイントなどの重要な機能がないため、setuptoolsがdistutilsの拡張として開発され、さらにその拡張としてdistributeが開発されています。
 
   distutils -> setuptools -> distribute
 
-setup.py使うときはdistributeを使いましょう。
+歴史的な経緯はスライドを参照して頂ければと思いますが、とりあえずsetup.py使うときはdistributeを使いましょう。
 
 easy_install
 ------------
 
-（清水川さんの資料参照）
-
-easy_installコマンドでややこしいのは、これ自体はsetuptoolsモジュールを叩くためのスクリプトであって、setuptoolsモジュールが複数のパッケージで実装されているということです。歴史的な経緯はここでは触れませんが、setuptoolsよりもdistributeの方が後発で、開発も活発であり、多機能です。そしてそのdistributeの機能を取り込んだPython3.3以降の標準機能をバックポートしたものがdistutils2です。
+easy_installコマンドでややこしいのは、これ自体はsetuptoolsモジュールを叩くためのスクリプトであって、setuptoolsモジュールが複数のパッケージで実装されているということです。歴史的な経緯はスライドにあるとおりですが、setuptoolsよりもdistributeの方が後発で、開発も活発であり、多機能です。そしてそのdistributeの機能を取り込んだPython3.3以降の標準機能をバックポートしたものがdistutils2です。
 
 発表時現在で現状有姿でPython3に対応しているのはdistributeのみであり、distributeが現時点でデファクトスタンダートとなっています。distributeで使えるeasy_installのオプションは次の通り。
+
 
 :--upgrade,-U: 強制アップグレード
 :--always-unzip,-Z: zipは展開してインストール
