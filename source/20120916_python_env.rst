@@ -151,49 +151,67 @@ setup.py
 
 ``setup.py`` is the important script which is necessary for distributing, building and installing Python modules into system. It contains ``setup`` function which handles all metadata describing the module. You can refer to official Python documantation for details of ``setup.py``, so I provide current status of ``setup.py``.
 
-setup関数自体はPython標準ライブラリのdistutils内で定義されていますが、依存ライブラリの解消や、エントリポイントなどの重要な機能がないため、setuptoolsがdistutilsの拡張として開発され、さらにその拡張としてdistributeが開発されています。
+``setuptools`` had been developed as an entended version of ``distutils``, the standard library which defines ``setup`` function itself, since ``distutils`` lacks important features such that solves dependencies or that offers entry point. And ``distribute`` has been being developed to extend ``setuptools`` package as its devleopment had stopped.
 
   distutils -> setuptools -> distribute
 
-歴史的な経緯はスライドを参照して頂ければと思いますが、とりあえずsetup.py使うときはdistributeを使いましょう。
+I'm not trying to give a lecture of "History of Python packaging" but this is good to know thing so that you won't use any other libraries than ``distribute`` on writing ``setup.py``.
 
 easy_install
 ------------
 
-easy_installコマンドでややこしいのは、これ自体はsetuptoolsモジュールを叩くためのスクリプトであって、setuptoolsモジュールが複数のパッケージで実装されているということです。歴史的な経緯はスライドにあるとおりですが、setuptoolsよりもdistributeの方が後発で、開発も活発であり、多機能です。そしてそのdistributeの機能を取り込んだPython3.3以降の標準機能をバックポートしたものがdistutils2です。
+What ``easy_install`` command makes confusing is that it is just a script which calls ``setuptools`` module (Not ``setuptools`` package) and ``setuptools`` module is defined in several packages, i.e. ``setuptools`` package and ``destribute`` packages. As mentioned above, ``distribute`` packages is more actively developed and has more features than ``setuptools``.
+For your information, a new library ``distutils2`` is now trying to take over the functioality of ``distribute``, which aims at merging important features there into a standard library ``packaging`` in the feature release of Python 3.x (Actually ``packaging`` is proposed for Python 3.3 release but it was get rid of from release candidates)
 
-発表時現在で現状有姿でPython3に対応しているのはdistributeのみであり、distributeが現時点でデファクトスタンダートとなっています。distributeで使えるeasy_installのオプションは次の通り。
+As of now ``distribute`` only supports Python 3 as it is, and is de-facto standard. Options offered by ``easy_install`` of ``distribute`` are:
 
+.. list-table::
+     
+   * - ``--upgrade``, ``-U``
+     - force upgrade
 
-:--upgrade,-U: 強制アップグレード
-:--always-unzip,-Z: zipは展開してインストール
-:--multi-version,-m: 複数バージョンのインストールもしくはアンインストール
+   * - ``--always-unzip,-Z``
+     - don't install as a zipfile, no matter what
 
-他のオプションは ``easy_install --help`` で確認してください。
+   * - ``--multi-version,-m``
+     - make apps have to require() a version
+
+For more information, see ``easy_install --help``. 
 
 pip
 ---
 
-パッケージ管理ツールとして、easy_installにはなかったパッケージのアンインストール機能を始め、多くの機能があるツールです。
+``pip`` is another package management tool which has fancy functions not provided by ``easy_install``.
 
-:install: パッケージをインストール
-:uninstall: パッケージをアンインストール
-:bundle: pybundleを作成する（複数のパッケージを含むアーカイブを作る）
-:freeze: 現在インストールされているパッケージを標準出力に表示
-:search: PyPIを検索
-:zip: 個々のパッケージをzipする
-:unzip: 個々のパッケージをunzipする
+.. list-table::
 
-pipの場合、requirements.txtと呼ばれるファイルにsetup.pyのinstall_requestsと似た形式でパッケージを指定しておくと、次のようにまとめてパッケージのインストールができます::
+   * - install
+     - Install packages
 
-  $ cat requirements.txt
-  MyApp
-  Framework==0.9.4
-  Library>=0.2
+   * - uninstall
+     - Uninstall pacakges
 
-  $ pip install -r requirements.txt
+   * - freeze
+     - Output all currently installed packages (exact versions) to stdout
 
-pipは便利なのですが、easy_installとの互換性がないので、使うのであればどちらか一方にしたほうがいいでしょう。またpipはバイナリインストール機能がないため、例えばIPythonのようなモジュールはインストールできないことに注意しましょう。
+   * - bundle
+     - Create pybundle (archives containing multiple packages)
+
+   * - search
+     - Search PyPI
+
+As shown above, ``pip`` can bulk install with setting file in similar style as ``install_requests`` in ``setup.py``:
+
+.. code-block:: bash
+
+    $ cat requirements.txt
+    MyApp
+    Framework==0.9.4
+    Library>=0.2
+
+    $ pip install -r requirements.txt
+
+Though ``pip`` is useful but don't have compatibility with ``easy_install``, you should not use both in one system. Note that ``pip`` can't handle ``.egg`` packages.
 
 
 ワークスペースの管理
